@@ -83,16 +83,52 @@ if (!function_exists('whsso_plugin_settings_link')) {
 
 require_once dirname( __FILE__ ) .'/sticky-interface.php';
 
+if (!function_exists('whsso_tabs_create')) {
+	function whsso_tabs_create($name, $tab_names, $tab_bodies) {
+		echo "<div class=\"whsso-tab-group-register-beacon\" group-name=\"".$name."\"></div>";
+		$getid = 'tab-' . $name;
+		if ( isset( $_GET[$getid] )) {
+			$activeTab = $_GET[$getid];
+		} else {
+			$activeTab = $tab_names[0];
+		}
+		$valid = false;
+		foreach ($tab_names as $tabname) {
+			if ($activeTab == $tabname) {
+				$valid = true;
+			}
+		}
+        if (!$valid) {
+			$activeTab = $tab_names[0];
+		}
+		echo "<div class=\"whsso-tab-button-wrapper whsso-tab-group-".$name."\">";
+		$tabMakerI=0;
+		foreach ($tab_names as $tabname) {
+			echo "<button class=\"whsso-tab-button";
+			if ($activeTab == $tabname) {
+				echo ' whsso-tab-button-active';
+			}
+			echo "\" tab-index=\"".$tabMakerI."\">" . $tabname . "</button>";
+			$tabMakerI++;
+		}
+		echo "</div>";
+		for ($tabMakerI=0; $tabMakerI < count($tab_names); $tabMakerI++) { 
+			echo "<div class=\"whsso-tab-content whsso-tab-content-".$name;
+			if ($activeTab != $tab_names[$tabMakerI]) {
+				echo ' hide';
+			}
+			echo "\" id=\"whsso-tab-".$name."-".$tabMakerI."\">".$tab_bodies[$tabMakerI]."</div>";
+		}
+	}
+}
+
 if (!function_exists('whsso_plugin_settings')) {
 	function whsso_plugin_settings() {
-?>
-
-<?php
-				if ( isset( $_GET['tab'] )) {
-					$activeTab = $_GET['tab'];
-				} else {
-					$activeTab = 'home';
-				}
+		if ( isset( $_GET['tab'] )) {
+			$activeTab = $_GET['tab'];
+		} else {
+			$activeTab = 'home';
+		}
         if ($activeTab != 'home' && $activeTab != 'sticky' && $activeTab != 'tab3') {
           $activeTab = 'home';
         }
@@ -109,16 +145,21 @@ if (!function_exists('whsso_plugin_settings')) {
 	<div class="tab-content tab-home <?php if ($activeTab != 'home') {echo 'hide';} ?>">
 		
   <h3>Home Page</h3>
-  <p>I'm supposed to like put info here or something right?</p>
+  <p>Im supposed to like put info here or something right?</p>
 	</div>
 	<div class="tab-content tab-sticky <?php if ($activeTab != 'sticky') {echo 'hide';}?>">
 		<?php
-		echo sticky_anything_config_page();
-	?>
+			echo sticky_anything_config_page();
+		?>
 	</div>
 	<div class="tab-content tab-tab3 <?php if ($activeTab != 'tab3') {echo 'hide';}?>">
 		<h3>Blank Page</h3>
   <p>This page intentionally left blank.</p>
+  <?php
+$test_tab_names = array('Tab One', 'tab two', 'tab3');
+$test_tab_bodies = array('<p>Hello World<p>', generate_tab_test_content_tab2(), '<i>Goodbye World</i>');
+whsso_tabs_create("test", $test_tab_names, $test_tab_bodies);
+  ?>
 	</div>
 </div>
 <!-- Tab content -->
@@ -137,19 +178,6 @@ if (!function_exists('generate_tab_test_content_tab2')){
 		return "<div><b>Woah</b> <i>Neat</i>!</div>";
 	}
 }
-
-$test_tab_names = [
-	0 => 'tab1',
-	1 => 'tab2',
-	2 => 'tab3'
-];
-$test_tab_bodies = [
-	0 => '<p>Hello World<p>',
-	1 => generate_tab_test_content_tab2(),
-	2 => '<i>Goodbye World</i>'
-];
-
-createTabs("test", $test_tab_names, $test_tab_bodies);
 
 if (!function_exists('whsso_plugin_admin_init')) {
 	function whsso_plugin_admin_init() {

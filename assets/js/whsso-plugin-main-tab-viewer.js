@@ -18,6 +18,7 @@ function openCity(evt, cityName) {
   document.getElementById(cityName).style.display = "block";
   evt.currentTarget.className += " active";
 }
+
 jQuery(function($) {
 	$('#whsso-tab-button-wrapper button').on('click',function(t) {
 		console.log("Hello");
@@ -33,7 +34,7 @@ jQuery(function($) {
         $('.tabs-content div' + tab_id).removeClass('hide');
 
         // Change the URL
-        const urlsign = '&tab'
+        const urlsign = '&tab';
         var currentURL = window.location.href;
         if(currentURL.indexOf(urlsign)>0) {
 			var dex = currentURL.indexOf(urlsign);
@@ -61,5 +62,36 @@ jQuery(function($) {
 
         window.history.pushState(tab_title, tab_title, newURL);
         t.preventDefault();
-    })
-})
+    });
+});
+
+jQuery(function($) {
+	whsso_tab_group_process($, $('.whsso-tab-group-register-beacon').attr("group-name"));
+});
+
+function whsso_tab_group_process($, name) {
+  $(".whsso-tab-group-"+name+" button").on("click", function(t) {
+    $(this).parent().children().removeClass('whsso-tab-button-active');
+    $(this).addClass('whsso-tab-button-active');
+    $('.whsso-tab-content-'+name).addClass('hide');
+    $('#whsso-tab-'+name+'-'+$(this).attr("tab-index")).removeClass('hide');
+    
+    const urlsign = '&tab-'+name;
+    var currentURL = window.location.href;
+    var tab_name = $(this)[0].innerHTML;
+    if(currentURL.indexOf(urlsign)>0) {
+			var dex = currentURL.indexOf(urlsign);
+      var h1 = currentURL.substring(0, dex);
+      var h2 = currentURL.substring(dex+1);
+      if (h2.indexOf("&") == -1) {
+        var newURL = h1 + urlsign + '=' + tab_name;
+      } else {
+  	    var newURL = h1 + urlsign + '=' + tab_name + h2.substring(h2.indexOf("&"));
+      }
+    } else {
+      var newURL = currentURL + urlsign + '=' + tab_name;
+    }
+    window.history.pushState(tab_name, tab_name, newURL);
+    t.preventDefault();
+  });
+}
