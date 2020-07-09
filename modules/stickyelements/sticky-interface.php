@@ -250,12 +250,6 @@ if (!function_exists('load_sticky_anything')) {
     function load_sticky_anything() {
 		$options = get_option('sticky_anything_options');
 		$versionNum = NULL;
-		// Main jQuery plugin file
-		if($options['sa_debugmode']==true){
-	    	wp_register_script('stickyAnythingLib', plugins_url('/assets/js/jq-sticky-anything.js', __FILE__), array( 'jquery' ), $versionNum);
-	    } else {
-	    	wp_register_script('stickyAnythingLib', plugins_url('/assets/js/jq-sticky-anything.min.js', __FILE__), array( 'jquery' ), $versionNum);
-	    }
 	    wp_enqueue_script('stickyAnythingLib');
 		// Set defaults for by-default-empty elements (because '' does not work with the JQ plugin)
 		if (!$options['sa_topspace']) {
@@ -283,8 +277,8 @@ if (!function_exists('load_sticky_anything')) {
 		    'pushup' => $options['sa_pushup'],
 		    'adminbar' => $options['sa_adminbar']
 		);
-		wp_enqueue_script('stickThis', plugins_url('/assets/js/stickThis.js', __FILE__), array( 'jquery' ), $versionNum, true);
-		wp_localize_script('stickThis', 'sticky_anything_engage', $script_vars);
+		wp_enqueue_script('stickIt', plugins_url('stickIt.js', __FILE__), array( 'jquery' ), $versionNum, true);
+		wp_localize_script('stickIt', 'sticky_anything_engage', $script_vars);
     }
 }
 ?>

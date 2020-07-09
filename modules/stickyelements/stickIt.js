@@ -88,7 +88,7 @@ function stickIt($,stickyTop,minwidth,maxwidth,stickyZindex,pushup,dynamic,admin
 		a = 'client';
 		e = document.documentElement || document.body;
 	}
-	viewport = e[ a+'Width' ];
+	viewport = e[a+'Width'];
 	if ($('body').hasClass('admin-bar') && (viewport > 600)) {
 		adminBarHeight = $('#wpadminbar').height();
 	} else {
