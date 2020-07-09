@@ -70,7 +70,7 @@ function stickThis($, obj, options) {
 					settings.heightfunc,
 					settings.index
 				);
-			}, 1000
+			}, 10
 		);
 	}
 

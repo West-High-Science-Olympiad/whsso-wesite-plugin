@@ -139,7 +139,7 @@ if (!function_exists('sticky_anything_settings_tab')) {
 
 if (!function_exists("sticky_anything_info_tab")) {
 	function sticky_anything_info_tab() {
-		include "faq.php";
+		include "info.php";
 	}
 }
 

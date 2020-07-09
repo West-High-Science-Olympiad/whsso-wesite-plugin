@@ -57,20 +57,28 @@ if (!function_exists("empty_string")) {
 }
 
 // REGISTER AND RUN EACH MODULE
-
-// tabs
-require_once dirname( __FILE__ ).'/modules/tabs/tabmaker.php';
 if (!function_exists('whsso_plugin_styles')) {
 	function whsso_plugin_styles($hook) {
 		if ($hook == 'settings_page_whsso-plugin') {
-			wp_register_script('whssoPluginMainTabViewerScript', plugins_url('/modules/tabs/tabmanager.js', __FILE__), array( 'jquery' ));
-			wp_enqueue_script('whssoPluginMainTabViewerScript');
-			wp_register_style('whssoPluginMainTabViewerStyle', plugins_url('/modules/tabs/tabstyles.css', __FILE__));
-			wp_enqueue_style('whssoPluginMainTabViewerStyle');
+			whsso_register_module_jscss_tabs();
+			whsso_register_module_jscss_stickyelements();
 		}
 	}
+}
+
+// tabs
+require_once dirname( __FILE__ ).'/modules/tabs/tabmaker.php';
+function whsso_register_module_jscss_tabs() {
+	wp_register_script('whssoPluginMainTabViewerScript', plugins_url('/modules/tabs/tabmanager.js', __FILE__), array( 'jquery' ));
+	wp_enqueue_script('whssoPluginMainTabViewerScript');
+	wp_register_style('whssoPluginMainTabViewerStyle', plugins_url('/modules/tabs/tabstyles.css', __FILE__));
+	wp_enqueue_style('whssoPluginMainTabViewerStyle');
 }
 
 // stickyelements
 require_once dirname( __FILE__ ).'/modules/stickyelements/sticky-interface.php';
 add_action('wp_enqueue_scripts', 'load_sticky_anything');
+function whsso_register_module_jscss_stickyelements() {
+	wp_register_style('whssoPluginStickyHoverHintStyle', plugins_url('/modules/stickyelements/hoverhint.css', __FILE__));
+	wp_enqueue_style('whssoPluginStickyHoverHintStyle');
+}
