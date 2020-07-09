@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) exit;
 if (!function_exists('load_sticky_anything')) {
     function load_sticky_anything() {
 		$options = get_option('sticky_anything_options');
-		$versionNum = $options['sa_version'];
+		$versionNum = NULL;
 		// Main jQuery plugin file
 		if($options['sa_debugmode']==true){
 	    	wp_register_script('stickyAnythingLib', plugins_url('/assets/js/jq-sticky-anything.js', __FILE__), array( 'jquery' ), $versionNum);
@@ -43,19 +43,19 @@ if (!function_exists('load_sticky_anything')) {
 			$options['sa_zindex'] = '1';
 		}
 		$script_vars = array(
-		      'element' => $options['sa_element'],
-		      'topspace' => $options['sa_topspace'],
-		      'minscreenwidth' => $options['sa_minscreenwidth'],
-		      'maxscreenwidth' => $options['sa_maxscreenwidth'],
-		      'zindex' => $options['sa_zindex'],
-		      'legacymode' => $options['sa_legacymode'],
-		      'dynamicmode' => $options['sa_dynamicmode'],
-		      'debugmode' => $options['sa_debugmode'],
-		      'pushup' => $options['sa_pushup'],
-		      'adminbar' => $options['sa_adminbar']
+		    'element' => $options['sa_element'],
+		    'topspace' => $options['sa_topspace'],
+		    'minscreenwidth' => $options['sa_minscreenwidth'],
+		    'maxscreenwidth' => $options['sa_maxscreenwidth'],
+		    'zindex' => $options['sa_zindex'],
+		    'legacymode' => $options['sa_legacymode'],
+		    'dynamicmode' => $options['sa_dynamicmode'],
+		    'debugmode' => $options['sa_debugmode'],
+		    'pushup' => $options['sa_pushup'],
+		    'adminbar' => $options['sa_adminbar']
 		);
 		wp_enqueue_script('stickThis', plugins_url('/assets/js/stickThis.js', __FILE__), array( 'jquery' ), $versionNum, true);
-		wp_localize_script('stickThis', 'sticky_anything_engage', $script_vars );
+		wp_localize_script('stickThis', 'sticky_anything_engage', $script_vars);
     }
 }
 
@@ -115,61 +115,35 @@ if (!function_exists('whsso_tabs_create')) {
 		for ($tabMakerI=0; $tabMakerI < count($tab_names); $tabMakerI++) { 
 			echo "<div class=\"whsso-tab-content whsso-tab-content-".$name;
 			if ($activeTab != $tab_names[$tabMakerI]) {
-				echo ' hide';
+				echo ' whsso-hide';
 			}
-			echo "\" id=\"whsso-tab-".$name."-".$tabMakerI."\">".$tab_bodies[$tabMakerI]."</div>";
+			echo "\" id=\"whsso-tab-".$name."-".$tabMakerI."\">";
+			if (strlen($tab_bodies[$tabMakerI]) > 8 && substr($tab_bodies[$tabMakerI], 0, 8) === "include ") {
+				include substr($tab_bodies[$tabMakerI], 8);
+			}
+			else if (function_exists($tab_bodies[$tabMakerI])) {
+				$output = call_user_func($tab_bodies[$tabMakerI]);
+				if ($output != null) {
+					echo $output;
+				}
+			} else {
+				echo $tab_bodies[$tabMakerI];
+			}
+			echo "</div>";
 		}
 	}
 }
 
 if (!function_exists('whsso_plugin_settings')) {
 	function whsso_plugin_settings() {
-		if ( isset( $_GET['tab'] )) {
-			$activeTab = $_GET['tab'];
-		} else {
-			$activeTab = 'home';
-		}
-        if ($activeTab != 'home' && $activeTab != 'sticky' && $activeTab != 'tab3') {
-          $activeTab = 'home';
-        }
-			?>
-
-			<h2 id="whsso-tab-button-wrapper" class="tab">
-				<button class="nav-tab tablinks <?php if ($activeTab == 'home') { echo 'nav-tab-active'; } ?>" href="#home"><?php echo 'Home Page'; ?></button>
-				<button class="nav-tab tablinks <?php if ($activeTab == 'sticky') { echo 'nav-tab-active2'; } ?>" href="#sticky"><?php echo 'Sticky Element Settings'; ?></button>
-				<button class="nav-tab tablinks <?php if ($activeTab == 'tab3') { echo ' nav-tab-active2'; } ?>" href="#tab3"><?php echo 'Blank Page'; ?></button>
-			</h2>
-
-			<br><br>
-<div class="tabs-content">
-	<div class="tab-content tab-home <?php if ($activeTab != 'home') {echo 'hide';} ?>">
-		
-  <h3>Home Page</h3>
-  <p>Im supposed to like put info here or something right?</p>
-	</div>
-	<div class="tab-content tab-sticky <?php if ($activeTab != 'sticky') {echo 'hide';}?>">
-		<?php
-			echo sticky_anything_config_page();
-		?>
-	</div>
-	<div class="tab-content tab-tab3 <?php if ($activeTab != 'tab3') {echo 'hide';}?>">
-		<h3>Blank Page</h3>
-  <p>This page intentionally left blank.</p>
-  <?php
-$test_tab_names = array('Tab One', 'tab two', 'tab3');
-$test_tab_bodies = array('<p>Hello World<p>', generate_tab_test_content_tab2(), '<i>Goodbye World</i>');
-whsso_tabs_create("test", $test_tab_names, $test_tab_bodies);
-  ?>
-	</div>
-</div>
-<!-- Tab content -->
-
-	<?php
-	}
-}
-
-if (!function_exists('createTabs')) {
-	function createTabs($name, $tab_names, $tab_bodies) {
+		whsso_tabs_create("Main",
+			array('Home Page', 'Sticky Element Settings', "Blank Page"),
+			array(
+				"<h3>Home Page</h3>\n<p>Im supposed to like put info here or something right?</p>",
+				"sticky_anything_config_page",
+				"<h3>Blank Page</h3>\n<p>This page intentionally left blank.</p>"
+			)
+		);
 	}
 }
 
@@ -215,6 +189,16 @@ add_action('admin_menu', 'whsso_plugin_add_to_plugin_list');
 add_action('admin_init', 'whsso_plugin_admin_init');
 add_action('admin_enqueue_scripts', 'whsso_plugin_styles');
 add_filter("plugin_action_links_$plugin", 'whsso_plugin_settings_link');
+if (isset($_GET['page'])) {
+	if ($_GET['page'] === 'whsso-plugin') {
+		add_filter('admin_footer_text', "empty_string");
+		add_filter('update_footer', 'empty_string', 11);
+	}
+}
+
+function empty_string($default) {
+	return "";
+}
 
 function debug_to_console($data) {
     $output = $data;

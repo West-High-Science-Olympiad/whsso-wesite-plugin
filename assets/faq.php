@@ -1,3 +1,4 @@
+<br>
 <p><strong><?php _e('Q: I need help please!','sticky-menu-or-anything-on-scroll'); ?></strong><br />
 <?php _e('Please read the FAQ below first and then go to the plugin\'s <a href="https://wordpress.org/support/plugin/sticky-menu-or-anything-on-scroll" target="_blank">support forum  on WordPress.org</a> and post a message (include a link to your site if possible). Average response time is a few hours.','sticky-menu-or-anything-on-scroll'); ?></p>
 
