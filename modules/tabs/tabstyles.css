@@ -1,0 +1,39 @@
+.whsso-hide {
+  display: none;
+}
+
+/*(STYLE for <div> that holds the set of tabs)*/
+.whsso-tab-button-wrapper {
+  overflow: hidden;
+  background-color: #f1f1f1;
+  /* display: table; */
+  /* table-layout: fixed; */
+  border-bottom: 1px solid #000;
+}
+
+/*(STYLE for tab button)*/
+.whsso-tab-button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  border-bottom: 4px solid #aaa;
+}
+.whsso-tab-button:hover {
+  background-color: #fe0;
+}
+
+/*(STYLE for currently selected tab button, stacks with whsso-tab-button)*/
+.whsso-tab-button-active {
+  border-bottom: 4px solid #e00;
+}
+
+/*(STYLE for a <div> that will contain the full content of one tab)*/
+.whsso-tab-content {
+  /* width:96%; */
+  padding: 6px 12px;
+  border-top: none;
+}
