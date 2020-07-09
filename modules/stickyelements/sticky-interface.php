@@ -10,7 +10,7 @@ if (!function_exists('sticky_anything_config_page')) {
 	?>
 
 	<div id="sticky-anything-settings-general" class="wrap">
-		<h2>Sticky Menu (or Anything!) Settings</h2>
+		<h2>Sticky Element Settings</h2>
 		<p>
 			Pick any element on your page, and it will stick when it reaches the top of the page when you scroll down.
 			Usually handy for navigation menus, but can be used for any (unique) element on your page.
@@ -34,7 +34,7 @@ if (!function_exists('sticky_anything_config_page')) {
 					array('Settings', 'Infomation'),
 					array(
 						"sticky_anything_settings_tab",
-						'include assets/faq.php'
+						"sticky_anything_info_tab"
 					)
 				);
 				// IF THERE ARE ERRORS, SHOW THEM
@@ -137,6 +137,12 @@ if (!function_exists('sticky_anything_settings_tab')) {
 	}
 }
 
+if (!function_exists("sticky_anything_info_tab")) {
+	function sticky_anything_info_tab() {
+		include "faq.php";
+	}
+}
+
 if (!function_exists('whsso_plugin_admin_init')) {
 	function whsso_plugin_admin_init() {
 		add_action('admin_post_save_sticky_anything_options', 'process_sticky_anything_options');
@@ -232,10 +238,53 @@ if (!function_exists('process_sticky_anything_options')) {
 					"tab-Main" => "Sticky Element Settings",
 					"tab-stickysettingspage" => "Settings"
 				),
- 				admin_url( 'options-general.php' )
+ 				admin_url('options-general.php')
  			)
  		);
 
 		exit;
 	}
 }
+
+if (!function_exists('load_sticky_anything')) {
+    function load_sticky_anything() {
+		$options = get_option('sticky_anything_options');
+		$versionNum = NULL;
+		// Main jQuery plugin file
+		if($options['sa_debugmode']==true){
+	    	wp_register_script('stickyAnythingLib', plugins_url('/assets/js/jq-sticky-anything.js', __FILE__), array( 'jquery' ), $versionNum);
+	    } else {
+	    	wp_register_script('stickyAnythingLib', plugins_url('/assets/js/jq-sticky-anything.min.js', __FILE__), array( 'jquery' ), $versionNum);
+	    }
+	    wp_enqueue_script('stickyAnythingLib');
+		// Set defaults for by-default-empty elements (because '' does not work with the JQ plugin)
+		if (!$options['sa_topspace']) {
+			$options['sa_topspace'] = '0';
+		}
+		if (!$options['sa_minscreenwidth']) {
+			$options['sa_minscreenwidth'] = '0';
+		}
+		if (!$options['sa_maxscreenwidth']) {
+			$options['sa_maxscreenwidth'] = '999999';
+		}
+		// If empty, set to 1 - not to 0. Also, if set to "0", keep it at 0.
+		if (strlen($options['sa_zindex']) == "0") {		// LENGTH is 0 (not the actual value)
+			$options['sa_zindex'] = '1';
+		}
+		$script_vars = array(
+		    'element' => $options['sa_element'],
+		    'topspace' => $options['sa_topspace'],
+		    'minscreenwidth' => $options['sa_minscreenwidth'],
+		    'maxscreenwidth' => $options['sa_maxscreenwidth'],
+		    'zindex' => $options['sa_zindex'],
+		    'legacymode' => $options['sa_legacymode'],
+		    'dynamicmode' => $options['sa_dynamicmode'],
+		    'debugmode' => $options['sa_debugmode'],
+		    'pushup' => $options['sa_pushup'],
+		    'adminbar' => $options['sa_adminbar']
+		);
+		wp_enqueue_script('stickThis', plugins_url('/assets/js/stickThis.js', __FILE__), array( 'jquery' ), $versionNum, true);
+		wp_localize_script('stickThis', 'sticky_anything_engage', $script_vars);
+    }
+}
+?>
