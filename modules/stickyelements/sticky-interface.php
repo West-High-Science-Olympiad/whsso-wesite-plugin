@@ -143,8 +143,8 @@ if (!function_exists("sticky_anything_info_tab")) {
 	}
 }
 
-if (!function_exists('whsso_plugin_admin_init')) {
-	function whsso_plugin_admin_init() {
+if (!function_exists('sticky_anything_admin_init')) {
+	function sticky_anything_admin_init() {
 		add_action('admin_post_save_sticky_anything_options', 'process_sticky_anything_options');
 	}
 }

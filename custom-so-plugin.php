@@ -78,6 +78,7 @@ function whsso_register_module_jscss_tabs() {
 // stickyelements
 require_once dirname( __FILE__ ).'/modules/stickyelements/sticky-interface.php';
 add_action('wp_enqueue_scripts', 'load_sticky_anything');
+add_action('admin_init', 'sticky_anything_admin_init');
 function whsso_register_module_jscss_stickyelements() {
 	wp_register_style('whssoPluginStickyHoverHintStyle', plugins_url('/modules/stickyelements/hoverhint.css', __FILE__));
 	wp_enqueue_style('whssoPluginStickyHoverHintStyle');
