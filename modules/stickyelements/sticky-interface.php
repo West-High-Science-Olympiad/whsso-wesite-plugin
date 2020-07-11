@@ -130,8 +130,27 @@ if (!function_exists('sticky_anything_settings_tab')) {
 					<em>Layer index of the top sticky element.</em>
 				</td>
 			</tr>
+			<tr>
+				<td>
+					<label for="sa_rate"><b>Rate:</b></label>
+				</td>
+				<td>
+					(optional)
+				</td>
+				<td>
+					<span tooltip="Interval on which the sticky element is run, or 0 to use scroll listener."><span class="dashicons dashicons-editor-help"></span></span>
+				</td>
+				<td>
+					<input type="number" id="sa_rate" name="sa_rate" value="<?php
+						echo esc_html($sticky_anything_options['sa_rate'] );
+					?>" style="width:80px;"/>
+				</td>
+				<td>
+					<em>Milliseconds between each update of sticky CSS, or zero to use scroll listener.</em>
+				</td>
+			</tr>
 		</table>
-		<br><input type="submit" value="<?php _e('Save Changes','sticky-menu-or-anything-on-scroll'); ?>" class="button-primary"/>
+		<br><input type="submit" value="Save Changes" class="button-primary"/>
 	</form>
 		<?php
 	}
@@ -174,17 +193,17 @@ if (!function_exists('process_sticky_anything_options')) {
 			}
 		}
 
-		foreach ( array('sa_minscreenwidth') as $option_name ) {
-			if ( isset( $_POST[$option_name] ) ) {
-				$options[$option_name] = sanitize_text_field( $_POST[$option_name] );
-			}
-		}
+		// foreach ( array('sa_minscreenwidth') as $option_name ) {
+		// 	if ( isset( $_POST[$option_name] ) ) {
+		// 		$options[$option_name] = sanitize_text_field( $_POST[$option_name] );
+		// 	}
+		// }
 
-		foreach ( array('sa_maxscreenwidth') as $option_name ) {
-			if ( isset( $_POST[$option_name] ) ) {
-				$options[$option_name] = sanitize_text_field( $_POST[$option_name] );
-			}
-		}
+		// foreach ( array('sa_maxscreenwidth') as $option_name ) {
+		// 	if ( isset( $_POST[$option_name] ) ) {
+		// 		$options[$option_name] = sanitize_text_field( $_POST[$option_name] );
+		// 	}
+		// }
 
 		foreach ( array('sa_zindex') as $option_name ) {
 			if ( isset( $_POST[$option_name] ) ) {
@@ -192,41 +211,47 @@ if (!function_exists('process_sticky_anything_options')) {
 			}
 		}
 
-		foreach ( array('sa_pushup') as $option_name ) {
+		// foreach ( array('sa_pushup') as $option_name ) {
+		// 	if ( isset( $_POST[$option_name] ) ) {
+		// 		$options[$option_name] = sanitize_text_field( $_POST[$option_name] );
+		// 	}
+		// }
+
+		// foreach ( array('sa_adminbar') as $option_name ) {
+		// 	if ( isset( $_POST[$option_name] ) ) {
+		// 		$options[$option_name] = true;
+		// 	} else {
+		// 		$options[$option_name] = false;
+		// 	}
+		// }
+
+		// foreach ( array('sa_legacymode') as $option_name ) {
+		// 	if ( isset( $_POST[$option_name] ) ) {
+		// 		$options[$option_name] = true;
+		// 	} else {
+		// 		$options[$option_name] = false;
+		// 	}
+		// }
+
+		// foreach ( array('sa_dynamicmode') as $option_name ) {
+		// 	if ( isset( $_POST[$option_name] ) ) {
+		// 		$options[$option_name] = true;
+		// 	} else {
+		// 		$options[$option_name] = false;
+		// 	}
+		// }
+
+		// foreach ( array('sa_debugmode') as $option_name ) {
+		// 	if ( isset( $_POST[$option_name] ) ) {
+		// 		$options[$option_name] = true;
+		// 	} else {
+		// 		$options[$option_name] = false;
+		// 	}
+		// }
+		
+		foreach ( array('sa_rate') as $option_name ) {
 			if ( isset( $_POST[$option_name] ) ) {
 				$options[$option_name] = sanitize_text_field( $_POST[$option_name] );
-			}
-		}
-
-		foreach ( array('sa_adminbar') as $option_name ) {
-			if ( isset( $_POST[$option_name] ) ) {
-				$options[$option_name] = true;
-			} else {
-				$options[$option_name] = false;
-			}
-		}
-
-		foreach ( array('sa_legacymode') as $option_name ) {
-			if ( isset( $_POST[$option_name] ) ) {
-				$options[$option_name] = true;
-			} else {
-				$options[$option_name] = false;
-			}
-		}
-
-		foreach ( array('sa_dynamicmode') as $option_name ) {
-			if ( isset( $_POST[$option_name] ) ) {
-				$options[$option_name] = true;
-			} else {
-				$options[$option_name] = false;
-			}
-		}
-
-		foreach ( array('sa_debugmode') as $option_name ) {
-			if ( isset( $_POST[$option_name] ) ) {
-				$options[$option_name] = true;
-			} else {
-				$options[$option_name] = false;
 			}
 		}
 
@@ -255,12 +280,12 @@ if (!function_exists('load_sticky_anything')) {
 		if (!$options['sa_topspace']) {
 			$options['sa_topspace'] = '0';
 		}
-		if (!$options['sa_minscreenwidth']) {
-			$options['sa_minscreenwidth'] = '0';
-		}
-		if (!$options['sa_maxscreenwidth']) {
-			$options['sa_maxscreenwidth'] = '999999';
-		}
+		// if (!$options['sa_minscreenwidth']) {
+		// 	$options['sa_minscreenwidth'] = '0';
+		// }
+		// if (!$options['sa_maxscreenwidth']) {
+		// 	$options['sa_maxscreenwidth'] = '999999';
+		// }
 		// If empty, set to 1 - not to 0. Also, if set to "0", keep it at 0.
 		if (strlen($options['sa_zindex']) == "0") {		// LENGTH is 0 (not the actual value)
 			$options['sa_zindex'] = '1';
@@ -268,14 +293,15 @@ if (!function_exists('load_sticky_anything')) {
 		$script_vars = array(
 		    'element' => $options['sa_element'],
 		    'topspace' => $options['sa_topspace'],
-		    'minscreenwidth' => $options['sa_minscreenwidth'],
-		    'maxscreenwidth' => $options['sa_maxscreenwidth'],
+		    // 'minscreenwidth' => $options['sa_minscreenwidth'],
+		    // 'maxscreenwidth' => $options['sa_maxscreenwidth'],
 		    'zindex' => $options['sa_zindex'],
-		    'legacymode' => $options['sa_legacymode'],
-		    'dynamicmode' => $options['sa_dynamicmode'],
-		    'debugmode' => $options['sa_debugmode'],
-		    'pushup' => $options['sa_pushup'],
-		    'adminbar' => $options['sa_adminbar']
+		    // 'legacymode' => $options['sa_legacymode'],
+		    // 'dynamicmode' => $options['sa_dynamicmode'],
+		    // 'debugmode' => $options['sa_debugmode'],
+		    // 'pushup' => $options['sa_pushup'],
+			// 'adminbar' => $options['sa_adminbar']
+			'rate' => $options['sa_rate']
 		);
 		wp_enqueue_script('stickIt', plugins_url('stickIt.js', __FILE__), array( 'jquery' ), $versionNum, true);
 		wp_localize_script('stickIt', 'sticky_anything_engage', $script_vars);

@@ -7,12 +7,18 @@
 		var input = sticky_anything_engage.element;
         var elemnames = input.split("&");
         
-        const topGap = sticky_anything_engage.topspace;
+        var topGap = sticky_anything_engage.topspace;
+        if (!parseInt(topGap)) {
+            topGap = "0";
+        }
         
         var elems = Array(elemnames.length);
         for (var i = 0; i < elems.length; i++) {
             elems[i] = $(elemnames[i])[0];
         }
+        elems = elems.filter(function (elem) {
+            return elem != null;
+        });
 
         console.log(elems);
 
@@ -89,26 +95,23 @@
             }
         	for (var i = 0; i <= top; i++) {
                 var newneedstick;
-                if (stuck[i]) {
-                    unstick(elems[i]);
-                    stuck[i] = false;
-                }
+                var origposeelem = stuck[i] ? document.getElementById("sticky-placeholder-"+i) : elems[i];
                 if (i == 0) {
                     var adminbarelem = document.getElementById("wpadminbar");
                     if (adminbarelem) {
-                        newneedstick = getElementDistance(adminbarelem, elems[0]) <= parseInt(topGap);
+                        newneedstick = getElementDistance(adminbarelem, origposeelem) <= parseInt(topGap);
                     } else {
                         newneedstick = window.pageYOffset >= parseInt(topGap);
                     }
                 } else {
-                    newneedstick = getElementDistance(elems[i-1], elems[i]) <= 0;
+                    newneedstick = getElementDistance(elems[i-1], origposeelem) <= 0;
                 }
             	if (newneedstick) {
         	        if (i < top) {
         	        	offset[i+1] = offset[i] + parseInt(elems[i].clientHeight);
                     }
                     if (!stuck[i]) {
-                        stick(elems[i], offset[i], poses[i]);
+                        stick(elems[i], offset[i], poses[i], i);
                         stuck[i] = true;
                     }
           		} else {
@@ -120,15 +123,16 @@
             }
         }
 
-        var placeholder = function(width, height) {
+        var placeholder = function(width, height, i) {
             var out = document.createElement('div');
             out.style.width = width + "px";
             out.style.height = height + "px";
+            out.id = "sticky-placeholder-" + i;
             return out;
         }
 
-        var stick = function(element, elemoffset, pose) {
-            element.parentElement.insertBefore(placeholder(pose.width, pose.height), element);
+        var stick = function(element, elemoffset, pose, i) {
+            element.parentElement.insertBefore(placeholder(pose.width, pose.height, i), element);
             element.style.position = "fixed";
             element.style.top = elemoffset + "px";
             element.style.width = pose.width + "px";
@@ -144,7 +148,12 @@
 
         recalculateStickyOffset();
 
-        window.addEventListener("scroll", reStick);
+        var rate = parseInt(sticky_anything_engage.rate);
+        if (rate == 0) {
+            window.addEventListener("scroll", reStick);
+        } else {
+            setInterval(reStick, rate);
+        }
         window.addEventListener("resize", recalculateStickyOffset);
 	});
 }(jQuery));
