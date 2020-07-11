@@ -30,11 +30,17 @@ if (!function_exists('whsso_plugin_settings')) {
 		whsso_tabs_create("Main",
 			array('Home Page', 'Sticky Element Settings', "Blank Page"),
 			array(
-				"<h3>Home Page</h3>\n<p>Im supposed to like put info here or something right?</p>",
+				"backend_landing_page",
 				"sticky_anything_config_page",
 				"<h3>Blank Page</h3>\n<p>This page intentionally left blank.</p>"
 			)
 		);
+	}
+}
+
+if (!function_exists("backend_landing_page")) {
+	function backend_landing_page() {
+		include "backend-home.php";
 	}
 }
 
