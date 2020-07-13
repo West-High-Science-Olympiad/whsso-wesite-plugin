@@ -28,11 +28,11 @@ if (!function_exists('whsso_plugin_settings')) {
 	function whsso_plugin_settings() {
 		echo "<br>";
 		whsso_tabs_create("Main",
-			array('Home Page', 'Sticky Element Settings', "Blank Page"),
+			array('Home Page', 'Sticky Element Settings', "Helpful Bot Configuration"),
 			array(
 				"backend_landing_page",
 				"sticky_anything_config_page",
-				"<h3>Blank Page</h3>\n<p>This page intentionally left blank.</p>"
+				"helpful_bot_config_page"
 			)
 		);
 	}
@@ -68,6 +68,7 @@ if (!function_exists('whsso_plugin_styles')) {
 		if ($hook == 'settings_page_whsso-plugin') {
 			whsso_register_module_jscss_tabs();
 			whsso_register_module_jscss_stickyelements();
+			whsso_register_module_jscss_helpfulbot();
 		}
 	}
 }
@@ -81,6 +82,9 @@ function whsso_register_module_jscss_tabs() {
 	wp_enqueue_style('whssoPluginMainTabViewerStyle');
 }
 
+// phpbutton
+require_once dirname( __FILE__ ).'/modules/phpbutton/button.php';
+
 // stickyelements
 require_once dirname( __FILE__ ).'/modules/stickyelements/sticky-interface.php';
 add_action('wp_enqueue_scripts', 'load_sticky_anything');
@@ -89,3 +93,12 @@ function whsso_register_module_jscss_stickyelements() {
 	wp_register_style('whssoPluginStickyHoverHintStyle', plugins_url('/modules/stickyelements/hoverhint.css', __FILE__));
 	wp_enqueue_style('whssoPluginStickyHoverHintStyle');
 }
+
+// helpfulbot
+require_once dirname( __FILE__ ).'/modules/helpfulbot/helpful.php';
+function whsso_register_module_jscss_helpfulbot() {
+	wp_register_script('whssoPlgnHlpflBtSttngsPagScrpt', plugins_url('/modules/helpfulbot/settings.js', __FILE__), array( 'jquery' ));
+	wp_enqueue_script('whssoPlgnHlpflBtSttngsPagScrpt');
+}
+register_activation_hook(__FILE__, 'launch_helpful_bot');
+register_deactivation_hook(__FILE__, 'kill_helpful_bot');
