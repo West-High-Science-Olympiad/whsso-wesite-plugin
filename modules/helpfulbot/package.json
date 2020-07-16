@@ -1,0 +1,31 @@
+{
+  "name": "helpfulbot0355",
+  "version": "1.0.0",
+  "description": "Custom Discord bot for helping out in the WHSSO team server",
+  "main": "bot.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "discord.js": "^12.2.0",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "http": "0.0.1-security",
+    "moment": "^2.27.0",
+    "moment-timezone": "^0.5.31",
+    "node-fetch": "^2.6.0",
+    "sqlite3": "^5.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/West-High-Science-Olympiad/whsso-website-plugin.git"
+  },
+  "author": "WHSSO",
+  "license": "SEE LICENSE IN license.txt",
+  "bugs": {
+    "url": "https://github.com/West-High-Science-Olympiad/whsso-website-plugin/issues"
+  },
+  "homepage": "https://github.com/West-High-Science-Olympiad/whsso-website-plugin#readme"
+}
