@@ -1,4 +1,21 @@
-// Where the app begins
+/*
+    WHSSO Website Plugin: for custom frontend interface modification and
+    educational/competitive projects requiring a home on the website
+    Copyright (C) 2020  WHSSO
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 // Create the Web Interface
 const express = require("express");
@@ -8,154 +25,7 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// const http = require('http');
-
-// app.get("/", (request, response) => {
-//   console.log(Date.now() + " Ping Received");
-//   response.sendStatus(200);
-// });
-
-// // init sqlite db
-// const fetch = require("node-fetch");
-// const dbFile = "./.data/sqlite.db";
-// const fs = require("fs");
-// const exists = fs.existsSync(dbFile);
-// const sqlite3 = require("sqlite3").verbose();
-// const db = new sqlite3.Database(dbFile);
-// // database
-// db.serialize(() => {
-//   if (!exists) {
-//     db.run(
-//       "CREATE TABLE KeyValue (key TEXT, value TEXT)"
-//     );
-//     console.log("New table KeyValue created!");
-//   } else {
-//     console.log('Database "KeyValue" ready to go!');
-//     db.each("SELECT * from KeyValue", (err, row) => {
-//       if (err) {
-//         console.log("dB retrieval error");
-//         console.log(err);
-//       }
-//       if (row) {
-//         // console.log(`Retrieved: ${row.key} = ${row.value}`);
-//       }
-//     });
-//   }
-// });
-// app.get("/getTable", (request, response) => {
-//   db.all("SELECT * from KeyValue", (err, rows) => {
-//     response.send(JSON.stringify(rows));
-//   });
-// });
-
-// // endpoint to remove a single value from the database
-// app.post("/removePair", (request, response) => {
-//   db.run("DELETE FROM KeyValue WHERE key=\""+request.body.key+"\"", error => {
-//     if (error) {
-//       console.log(error);
-//       response.send({ message: "error!" });
-//     } else {
-//       response.send({ message: "success" });
-//     }
-//   });
-// });
-
-// // endpoint to add a key-value pair to the database
-// app.post("/addPair", (request, response) => {
-//   const cleansedKey = cleanseString(request.body.key);
-//   const cleansedVal = cleanseString(request.body.value);
-//   db.run("INSERT INTO KeyValue VALUES (\"" + cleansedKey + "\", \"" + cleansedVal + "\")", error => {
-//     if (error) {
-//       console.log(error);
-//       response.send({ message: "error!" });
-//     } else {
-//       response.send({ message: "success" });
-//     }
-//   });
-// });
-
-// // endpoint to clear dreams from the database
-// app.get("/clearTable", (request, response) => {
-//   db.each(
-//     "SELECT * from KeyValue",
-//     (err, row) => {
-//       console.log("row", row);
-//       if (row) {
-//         db.run(`DELETE FROM KeyValue WHERE key=?`, row.key, error => {
-//           console.log(`deleted data at ${row.key}`);
-//         });
-//       }
-//     },
-//     err => {
-//       if (err) {
-//         response.send({ message: "error!" });
-//       } else {
-//         response.send({ message: "success" });
-//       }
-//     }
-//   );
-// });
-
-// // helper function that prevents html/css/script malice
-// const cleanseString = function(string) {
-//   return string.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-// };
-
-// function forEachDataPair(action) {
-//   fetch("https://helpful-bot-0355.glitch.me/getTable", {})
-//   .then(res => res.json())
-//   .then(response => {
-//     response.forEach(row => {
-//       action(row);
-//     });
-//   });
-// }
-
-// function storeKeyAndValue(key, value) {
-//   const data = {
-//     key: key,
-//     value: value
-//   };
-//   storeKvPair(data);
-// }
-
-// function storeKvPair(data) {
-//   fetch("https://helpful-bot-0355.glitch.me/addPair", {
-//     method: "POST",
-//     body: JSON.stringify(data),
-//     headers: { "Content-Type": "application/json" }
-//   });
-//   dataMap[data.key] = data.value;
-// }
-
-// function clearTable() {
-//   fetch("https://helpful-bot-0355.glitch.me/clearTable", {})
-//     .then(res => res.json())
-//     .then(response => {
-//       console.log("cleared table");
-//     });
-//   dataMap = new Map();
-// }
-
-// function removeKey(key) {
-//   const data = {
-//     key: key
-//   };
-//   fetch("https://helpful-bot-0355.glitch.me/removePair", {
-//     method: "POST",
-//     body: JSON.stringify(data),
-//     headers: { "Content-Type": "application/json" }
-//   });
-//   dataMap.delete(key);
-// }
-
-// var dataMap = new Map();
-// forEachDataPair(data => {dataMap[data.key] = data.value;});
-
-// *AHEM* (clears throat)
-// Launch the Discord Bot
-
-const prefix = 'h?'
+const prefix = 'h?';
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
@@ -181,9 +51,36 @@ registerCommand('dmme', dm, 'DM\'s you a greeting');
 registerCommand('smash', smash, 'Outputs a random string (keyboard smash) with specified the length, default 35');
 registerCommand('echo', echo, 'Repeats the argument');
 registerCommand('pin', pin, 'Pins the message with the provided ID (command and message must be in the same channel)');
-// registerCommand('put', put, 'Puts a key-value to the database');
-// registerCommand('get', get, 'Gets a key-value from the database');
+registerCommand('brrify', brrify, 'Randomizes the capitalization of the argument and then deletes the command');
+registerCommand('put', put, 'Puts a key-value to the database');
+registerCommand('get', get, 'Gets a key-value from the database');
 registerCommand('periodics', periodics, 'Displays the registered periodic functions');
+
+const dbFile = "./.data/sqlite.db";
+const fs = require("fs");
+const exists = fs.existsSync(dbFile);
+if (!fs.existsSync("./.data")) {
+  fs.mkdirSync("./.data");
+}
+if (!exists) {
+  fs.openSync(dbFile, 'w');
+}
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database(dbFile);
+
+// database
+db.serialize(() => {
+  if (!exists) {
+    db.run(
+      "CREATE TABLE KeyValue (key TEXT, value TEXT)"
+    );
+    console.log("New table KeyValue created!");
+  }
+});
+
+db.each("SELECT * FROM KeyValue", (err, row) => {
+  console.log(row);
+});
 
 client.on('message', msg => {
   if (msg == null || msg.member == null || msg.member.id == client.user.id) {
@@ -464,28 +361,52 @@ function pin(msg, argument) {
   })
 }
 
-// function put(msg, argument) {
-//   var tokens = argument.split("=");
-//   if (tokens.length != 2) {
-//     msg.reply("Enter a key and value separated by an equals sign.");
-//     return;
-//   }
-//   if (tokens[0].trim().toLowerCase().length == 0) {
-//     msg.channel.send("Empty key not permitted.");
-//   } else {
-//     storeKeyAndValue(tokens[0].trim().toLowerCase(), tokens[1].trim());
-//   }
-// }
+function put(msg, argument) {
+  argument = argument.trim();
+  if (argument.indexOf(" ") == -1 || argument.length == 0) {
+    msg.channel.send("Give a key and a value, separated by spaces.");
+    return;
+  }
+  var key = argument.split(" ")[0].toLowerCase();
+  var value = argument.substring(key.length + 1);
+  value = value.trim();
+  if (value.length == 0) {
+    msg.channel.send("Give a key and a value, separated by spaces.");
+    return;
+  }
+  db.run("DELETE FROM KeyValue WHERE key = ?", [key]);
+  db.run("INSERT INTO KeyValue VALUES (?, ?)", [key, value]);
+  msg.channel.send("Success!");
+}
 
-// function get(msg, argument) {
-//   var key = argument.trim().toLowerCase();
-//   if (key.length == 0) {
-//     msg.channel.send("Empty key not permitted.");
-//     return;
-//   }
-//   if (dataMap[key]) {
-//     msg.channel.send(argument.trim() + " = " + dataMap[key].trim());
-//   } else {
-//     msg.channel.send("No value found for key " + argument.trim());
-//   }
-// }
+function get(msg, argument) {
+  var key = argument.trim().toLowerCase();
+  if (key.length == 0) {
+    msg.channel.send("Empty key not permitted.");
+    return;
+  }
+  db.get("SELECT * FROM KeyValue WHERE key = ?", [key], (err, val) => {
+    if (val) {
+      msg.channel.send(argument.trim() + " = " + val.value.trim());
+    } else {
+      msg.channel.send("No value found for key " + argument.trim());
+    }
+  });
+}
+
+function brrify(msg, argument) {
+  if (argument.length == 0) {
+    msg.channel.send("HelpfulBot go brr.");
+    return;
+  }
+  var output = "";
+  for (var i = 0; i < argument.length; i++) {
+    if (i%2==1) {
+      output += argument.charAt(i).toUpperCase();
+    } else {
+      output += argument.charAt(i).toLowerCase();
+    }
+  }
+  msg.channel.send(output);
+  msg.delete({timeout: 1000});
+}

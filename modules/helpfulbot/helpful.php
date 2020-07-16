@@ -122,8 +122,6 @@ if (!function_exists('launch_helpful_bot')) {
     }
 }
 
-// launch_helpful_bot();
-
 if (!function_exists('kill_helpful_bot')) {
     function kill_helpful_bot() {
         global $wpdb;

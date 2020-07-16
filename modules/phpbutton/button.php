@@ -79,14 +79,14 @@ if (!function_exists("add_whsso_php_button")) {
                     <?php
                     if ($callback != NULL) {
                         echo $callback . "(response);";
-                    }// else {
+                    } else {
                         ?>
                         if (response.length > 0) {
                             console.log("PHP button gave response:");
                             console.log(response);
                         }
                         <?php
-                    //}
+                    }
                     ?>
                 });
     	    });
