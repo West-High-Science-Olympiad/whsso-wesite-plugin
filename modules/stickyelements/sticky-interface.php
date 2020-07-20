@@ -1,7 +1,23 @@
 <?php
-/**
- * --- THE WHOLE ADMIN SETTINGS PAGE -------------------------------------------------------------------
- */
+/*
+    WHSSO Website Plugin: for custom frontend interface modification and
+    educational/competitive projects requiring a home on the website
+    Copyright (C) 2020  WHSSO
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 $sticky_anything_options = get_option('sticky_anything_options');
 if (!function_exists('sticky_anything_config_page')) {
 	function sticky_anything_config_page() {
@@ -31,7 +47,7 @@ if (!function_exists('sticky_anything_config_page')) {
 					}
 				}
 				whsso_tabs_create("stickysettingspage",
-					array('Settings', 'Infomation'),
+					array('Settings', 'Information'),
 					array(
 						"sticky_anything_settings_tab",
 						"sticky_anything_info_tab"
@@ -193,62 +209,12 @@ if (!function_exists('process_sticky_anything_options')) {
 			}
 		}
 
-		// foreach ( array('sa_minscreenwidth') as $option_name ) {
-		// 	if ( isset( $_POST[$option_name] ) ) {
-		// 		$options[$option_name] = sanitize_text_field( $_POST[$option_name] );
-		// 	}
-		// }
-
-		// foreach ( array('sa_maxscreenwidth') as $option_name ) {
-		// 	if ( isset( $_POST[$option_name] ) ) {
-		// 		$options[$option_name] = sanitize_text_field( $_POST[$option_name] );
-		// 	}
-		// }
-
 		foreach ( array('sa_zindex') as $option_name ) {
 			if ( isset( $_POST[$option_name] ) ) {
 				$options[$option_name] = sanitize_text_field( $_POST[$option_name] );
 			}
 		}
 
-		// foreach ( array('sa_pushup') as $option_name ) {
-		// 	if ( isset( $_POST[$option_name] ) ) {
-		// 		$options[$option_name] = sanitize_text_field( $_POST[$option_name] );
-		// 	}
-		// }
-
-		// foreach ( array('sa_adminbar') as $option_name ) {
-		// 	if ( isset( $_POST[$option_name] ) ) {
-		// 		$options[$option_name] = true;
-		// 	} else {
-		// 		$options[$option_name] = false;
-		// 	}
-		// }
-
-		// foreach ( array('sa_legacymode') as $option_name ) {
-		// 	if ( isset( $_POST[$option_name] ) ) {
-		// 		$options[$option_name] = true;
-		// 	} else {
-		// 		$options[$option_name] = false;
-		// 	}
-		// }
-
-		// foreach ( array('sa_dynamicmode') as $option_name ) {
-		// 	if ( isset( $_POST[$option_name] ) ) {
-		// 		$options[$option_name] = true;
-		// 	} else {
-		// 		$options[$option_name] = false;
-		// 	}
-		// }
-
-		// foreach ( array('sa_debugmode') as $option_name ) {
-		// 	if ( isset( $_POST[$option_name] ) ) {
-		// 		$options[$option_name] = true;
-		// 	} else {
-		// 		$options[$option_name] = false;
-		// 	}
-		// }
-		
 		foreach ( array('sa_rate') as $option_name ) {
 			if ( isset( $_POST[$option_name] ) ) {
 				$options[$option_name] = sanitize_text_field( $_POST[$option_name] );
@@ -280,27 +246,13 @@ if (!function_exists('load_sticky_anything')) {
 		if (!$options['sa_topspace']) {
 			$options['sa_topspace'] = '0';
 		}
-		// if (!$options['sa_minscreenwidth']) {
-		// 	$options['sa_minscreenwidth'] = '0';
-		// }
-		// if (!$options['sa_maxscreenwidth']) {
-		// 	$options['sa_maxscreenwidth'] = '999999';
-		// }
-		// If empty, set to 1 - not to 0. Also, if set to "0", keep it at 0.
 		if (strlen($options['sa_zindex']) == "0") {		// LENGTH is 0 (not the actual value)
 			$options['sa_zindex'] = '1';
 		}
 		$script_vars = array(
 		    'element' => $options['sa_element'],
 		    'topspace' => $options['sa_topspace'],
-		    // 'minscreenwidth' => $options['sa_minscreenwidth'],
-		    // 'maxscreenwidth' => $options['sa_maxscreenwidth'],
 		    'zindex' => $options['sa_zindex'],
-		    // 'legacymode' => $options['sa_legacymode'],
-		    // 'dynamicmode' => $options['sa_dynamicmode'],
-		    // 'debugmode' => $options['sa_debugmode'],
-		    // 'pushup' => $options['sa_pushup'],
-			// 'adminbar' => $options['sa_adminbar']
 			'rate' => $options['sa_rate']
 		);
 		wp_enqueue_script('stickIt', plugins_url('stickIt.js', __FILE__), array( 'jquery' ), $versionNum, true);

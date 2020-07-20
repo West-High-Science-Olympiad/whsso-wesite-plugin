@@ -8,6 +8,25 @@
 * Author URI: https://whsscioly.org/
 **/
 
+/*
+    WHSSO Website Plugin: for custom frontend interface modification and
+    educational/competitive projects requiring a home on the website
+    Copyright (C) 2020  WHSSO
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 if (!defined('ABSPATH')) exit;
 
 if (!function_exists('whsso_plugin_add_to_plugin_list')) {
@@ -28,13 +47,19 @@ if (!function_exists('whsso_plugin_settings')) {
 	function whsso_plugin_settings() {
 		echo "<br>";
 		whsso_tabs_create("Main",
-			array('Home Page', 'Sticky Element Settings', "Blank Page"),
+			array('Home Page', 'Sticky Element Settings', "Helpful Bot Configuration"),
 			array(
-				"<h3>Home Page</h3>\n<p>Im supposed to like put info here or something right?</p>",
+				"backend_landing_page",
 				"sticky_anything_config_page",
-				"<h3>Blank Page</h3>\n<p>This page intentionally left blank.</p>"
+				"helpful_bot_config_page"
 			)
 		);
+	}
+}
+
+if (!function_exists("backend_landing_page")) {
+	function backend_landing_page() {
+		include "backend-home.php";
 	}
 }
 
@@ -57,11 +82,13 @@ if (!function_exists("empty_string")) {
 }
 
 // REGISTER AND RUN EACH MODULE
+require_once dirname( __FILE__ ).'/sekrit.php';
 if (!function_exists('whsso_plugin_styles')) {
 	function whsso_plugin_styles($hook) {
 		if ($hook == 'settings_page_whsso-plugin') {
 			whsso_register_module_jscss_tabs();
 			whsso_register_module_jscss_stickyelements();
+			whsso_register_module_jscss_helpfulbot();
 		}
 	}
 }
@@ -75,6 +102,9 @@ function whsso_register_module_jscss_tabs() {
 	wp_enqueue_style('whssoPluginMainTabViewerStyle');
 }
 
+// phpbutton
+require_once dirname( __FILE__ ).'/modules/phpbutton/button.php';
+
 // stickyelements
 require_once dirname( __FILE__ ).'/modules/stickyelements/sticky-interface.php';
 add_action('wp_enqueue_scripts', 'load_sticky_anything');
@@ -83,3 +113,14 @@ function whsso_register_module_jscss_stickyelements() {
 	wp_register_style('whssoPluginStickyHoverHintStyle', plugins_url('/modules/stickyelements/hoverhint.css', __FILE__));
 	wp_enqueue_style('whssoPluginStickyHoverHintStyle');
 }
+
+// helpfulbot
+require_once dirname( __FILE__ ).'/modules/helpfulbot/helpful.php';
+function whsso_register_module_jscss_helpfulbot() {
+	wp_register_script('whssoPlgnHlpflBtSttngsPagScrpt', plugins_url('/modules/helpfulbot/settings.js', __FILE__), array( 'jquery' ));
+	wp_enqueue_script('whssoPlgnHlpflBtSttngsPagScrpt');
+	wp_register_style('whssoPlgnHlpflBtSttngsPagStyle', plugins_url('/modules/helpfulbot/settings.css', __FILE__));
+	wp_enqueue_style('whssoPlgnHlpflBtSttngsPagStyle');
+}
+register_activation_hook(__FILE__, 'launch_helpful_bot');
+register_deactivation_hook(__FILE__, 'kill_helpful_bot');
