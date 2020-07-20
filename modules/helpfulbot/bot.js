@@ -31,7 +31,8 @@ const client = new Discord.Client();
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  client.user.setActivity('h?commands', { type: 'LISTENING' });
+  var setStatus = () => {client.user.setActivity('h?commands', { type: 'LISTENING' });};
+  setInterval(setStatus, 1000 * 60 * 60 * 8);
 });
 
 // Extra dependencies
@@ -397,6 +398,7 @@ function get(msg, argument) {
 function brrify(msg, argument) {
   if (argument.length == 0) {
     msg.channel.send("HelpfulBot go brr.");
+    msg.delete({timeout: 1000});
     return;
   }
   var output = "";
