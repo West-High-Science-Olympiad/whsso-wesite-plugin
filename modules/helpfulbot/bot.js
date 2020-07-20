@@ -33,6 +33,7 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
   var setStatus = () => {client.user.setActivity('h?commands', { type: 'LISTENING' });};
   setInterval(setStatus, 1000 * 60 * 60 * 8);
+  setStatus();
 });
 
 // Extra dependencies

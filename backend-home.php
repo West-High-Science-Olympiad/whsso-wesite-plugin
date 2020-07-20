@@ -71,3 +71,15 @@
     by function parameter.<br>
     <i>Since version 2.0</i>
 </p>
+<p><b>Helpful Bot</b><br>
+    Helpful Bot is a custom discord.js bot for the team communication server. By hosting it on the team website, we can receive reliable
+    and free custom labor of menial discord management. The module requires node and npm to be installed and in the command line path on
+    the server system, and installs the necessary dependencies on each boot. The authentication key and databases are not released on the
+    GitHub page, so to acquire these, ask a current developer, or pull the files from the website itself. The module settings page has
+    options to start and stop the bot and will, in the future, have options to customize how the bot runs. Note that if the server crashes,
+    the bot must be manually restarted as of this version. In the event that a fatal error occurs during boot or shutdown, the error should
+    be addressed and the status reset directly using the wordpress database. The bot may also display as running even when it is stopped
+    if an internal server error was responsible for the crash - in this case shutting down and restarting the bot will result in a clean
+    boot. Be aware that a full boot takes a relatively long duration due to dependencies. For more information about functionality, use
+    h?commands or h?periodics on the team Discord server.
+</p>
