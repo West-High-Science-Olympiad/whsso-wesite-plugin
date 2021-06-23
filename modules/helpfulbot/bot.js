@@ -34,6 +34,7 @@ client.on('ready', () => {
   var setStatus = () => {client.user.setActivity('h?commands', { type: 'LISTENING' });};
   setInterval(setStatus, 1000 * 60 * 60 * 8);
   setStatus();
+  checkPastReminders();
 });
 
 // Extra dependencies
@@ -56,6 +57,7 @@ registerCommand('pin', pin, 'Pins the message with the provided ID (command and 
 registerCommand('brrify', brrify, 'Randomizes the capitalization of the argument and then deletes the command');
 registerCommand('put', put, 'Puts a key-value to the database');
 registerCommand('get', get, 'Gets a key-value from the database');
+registerCommand('remindme', remindme, 'Schedules a reminder'); // note the addition to client.on("ready") for initialization
 registerCommand('periodics', periodics, 'Displays the registered periodic functions');
 
 const dbFile = "./.data/sqlite.db";
@@ -89,6 +91,23 @@ client.on('message', msg => {
     return;
   }
   var msgcontent = msg.content;
+  // var ianize = (str) => {
+  //     if (str.toLowerCase().includes("ian")) {
+  //         var strs = str.split(" ");
+  //         for (var i = 0; i < strs.length; i++) {
+  //             if (strs[i].toLowerCase().includes("ian")) {
+  //                 var j = strs[i].toLowerCase().indexOf("ian");
+  //                 var part1 = strs[i].substring(0, j);
+  //                 var part2 = strs[i].substring(j, j+3);
+  //                 var part3 = strs[i].substring(j+3);
+  //                 return "Hehe " + part1 + "**" + part2 + "**" + part3 + " hehe";
+  //             }
+  //         }
+  //     }
+  // }
+  // if (ianize(msgcontent)) {
+  //   msg.channel.send(ianize(msgcontent));
+  // }
   if (!msgcontent.startsWith(prefix)) {
     return;
   }
@@ -118,39 +137,41 @@ const THURSDAY  = 4;
 const FRIDAY    = 5;
 const SATURDAY  = 6;
 
+const PERIODIC_ANIT_DOUBLE_MIN_WAIT = 10000; // in millis
+
 var periodicactions = new Map();
 registerPeriodic(
-  nextDayTimeGetter(TUESDAY, '13:40'),
+  nextDayTimeGetter(TUESDAY, '14:40'),
   // messageSender('703374989457621092', 'There\'s a meeting in 20 minutes if you\'re free! Join voice for announcements!'),
-  messageSender('703374989457621092', '@everyone Don\'t forget that there\'s a meeting in 20 minutes! Join voice for announcements!'),
+  messageSender('703374989457621092', '<@&778863783791427605> Don\'t forget that there\'s a meeting in 20 minutes! Join voice for announcements!'),
   'Tuesday meeting reminder'
 );
+// registerPeriodic(
+//   nextDayTimeGetter(TUESDAY, '16:00'),
+//   setChannelPerms('708445244647014410', 'everyone', {VIEW_CHANNEL: false}),
+//   'Hide spam channel for Tuesday meeting'
+// );
+// registerPeriodic(
+//   nextDayTimeGetter(TUESDAY, '18:00'),
+//   setChannelPerms('708445244647014410', 'everyone', {VIEW_CHANNEL: true}),
+//   'Reopen spam channel after Tuesday meeting'
+// );
 registerPeriodic(
-  nextDayTimeGetter(TUESDAY, '14:00'),
-  setChannelPerms('708445244647014410', 'everyone', {VIEW_CHANNEL: false}),
-  'Hide spam channel for Tuesday meeting'
-);
-registerPeriodic(
-  nextDayTimeGetter(TUESDAY, '16:00'),
-  setChannelPerms('708445244647014410', 'everyone', {VIEW_CHANNEL: true}),
-  'Reopen spam channel after Tuesday meeting'
-);
-registerPeriodic(
-  nextDayTimeGetter(FRIDAY, '13:40'),
+  nextDayTimeGetter(FRIDAY, '14:40'),
   // messageSender('703374989457621092', 'There\'s a meeting in 20 minutes if you\'re free! Join voice for announcements!'),
-  messageSender('703374989457621092', '@everyone Don\'t forget that there\'s a meeting in 20 minutes! Join voice for announcements!'),
+  messageSender('703374989457621092', '<@&778863783791427605> Don\'t forget that there\'s a meeting in 20 minutes! Join voice for announcements!'),
   'Friday meeting reminder'
 );
-registerPeriodic(
-  nextDayTimeGetter(FRIDAY, '14:00'),
-  setChannelPerms('708445244647014410', 'everyone', {VIEW_CHANNEL: false}),
-  'Hide spam channel for Friday meeting'
-);
-registerPeriodic(
-  nextDayTimeGetter(FRIDAY, '16:00'),
-  setChannelPerms('708445244647014410', 'everyone', {VIEW_CHANNEL: true}),
-  'Reopen spam channel after Friday meeting'
-);
+// registerPeriodic(
+//   nextDayTimeGetter(FRIDAY, '14:00'),
+//   setChannelPerms('708445244647014410', 'everyone', {VIEW_CHANNEL: false}),
+//   'Hide spam channel for Friday meeting'
+// );
+// registerPeriodic(
+//   nextDayTimeGetter(FRIDAY, '16:00'),
+//   setChannelPerms('708445244647014410', 'everyone', {VIEW_CHANNEL: true}),
+//   'Reopen spam channel after Friday meeting'
+// );
 registerPeriodic(
   nextTimeGetter("6:00"),
   cleanServer(/*welcome channels:*/['696852006215614505', '696920456569290833'], /*Unverified role:*/'706371193640321046'),
@@ -160,6 +181,11 @@ registerPeriodic(
   nextTimeGetter("18:00"),
   cleanServer(/*welcome channels:*/['696852006215614505', '696920456569290833'], /*Unverified role:*/'706371193640321046'),
   'Evening server permissions check'
+);
+registerPeriodic(
+  () => 9000,
+  messageSender("708445244647014410", "this shouldn't be here"),
+  "test"
 );
 
 periodicinfo = periodicinfo.substring(0, periodicinfo.length - 2);
@@ -200,7 +226,7 @@ function nextDayTimeGetter(day, time) {
     var targMins = parseInt(times[1]);
     target.set({hour:targHours,minute:targMins,second:0,millisecond:0});
     target.add(-7 + (day - target.day()), 'days');
-    while (target.toDate() - now.toDate() <= 0) {
+    while (target.toDate() - now.toDate() <= PERIODIC_ANIT_DOUBLE_MIN_WAIT) {
       target.add(7, 'days');
     }
     return target.toDate() - now.toDate();
@@ -215,17 +241,29 @@ function nextTimeGetter(time) {
     var targHours = parseInt(times[0]);
     var targMins = parseInt(times[1]);
     target.set({hour:targHours,minute:targMins,second:0,millisecond:0});
-    while (target.toDate() - now.toDate() <= 0) {
+    while (target.toDate() - now.toDate() <= PERIODIC_ANIT_DOUBLE_MIN_WAIT) {
       target.add(1, 'days');
     }
     return target.toDate() - now.toDate();
   }
 }
 
-function wrap(inner, limit) {
+function wrap(inner, limit, nexttime) {
   return function() {
+    if (new Date() > nexttime) {
+      setTimeout(wrap(inner, limit, nexttime), new Date() - nexttime);
+      return;
+    }
     inner();
-    setTimeout(wrap(inner, limit), limit());
+    var regnext = () => {
+      var delaynxt = limit();
+      if (delaynxt < PERIODIC_ANIT_DOUBLE_MIN_WAIT) {
+        setTimeout(regnext, PERIODIC_ANIT_DOUBLE_MIN_WAIT);
+      } else {
+        setTimeout(wrap(inner, limit, new Date() + delaynxt), delaynxt);
+      }
+    };
+    regnext();
   }
 }
 
@@ -412,4 +450,113 @@ function brrify(msg, argument) {
   }
   msg.channel.send(output);
   msg.delete({timeout: 1000});
+}
+
+function remindme(msg, argument) {
+  // valid formats
+  //// NUMBER unit
+  //// TIME (HH:MM[:SS] [a/am,p/pm])
+  //// DATE (MM(/,-)DD[(/,-)YYYY])
+  //// DATE + TIME
+  var reminderinstant = -1;
+  var remindermessage = "";
+  var lc = argument.toLowerCase();
+  if (lc.split(" ").length < 2) {
+    msg.reply("Give a time then a reminder message as your argument.");
+    return;
+  }
+  var now = moment();
+  now = moment().tz('America/Los_Angeles');
+  var s = "seconds"; var m = "minutes"; var h = "hours"; var d = "days"; var w = "weeks"; var M = "months"; var y = "years";
+  var units = {
+    "seconds" : s, "second" : s, "secs" : s, "sec" : s, "s" : s,
+    "minutes" : m, "minute" : m, "mins" : m, "min" : m, "m" : m,
+    "hours" : h, "hour" : h, "hrs" : h, "hr" : h, "h" : h,
+    "days" : d, "day" : d, "d" : d,
+    "weeks" : w, "week" : w, "wks" : w, "wk" : w, "w" : w,
+    "months" : M, "month" : M,
+    "years" : y, "year" : y, "yrs" : y, "yr" : y, "y" : y
+  };
+  // var unitlist = Object.entries(units);
+  // units:
+  // for (var i = 0; i < unitlist.length; i++) {
+  //   var halves = lc.split(unitlist[i][0]);
+  //   if (halves.length == 2) {
+  //     var numstr = "";
+  //     for (var i2 = 0; i2 < halves[0].length; i2++) {
+  //       if (halves[0].charAt(i2).isAlphabetic()) {
+  //         continue units;
+  //       } else if (halves[0].charAt(i2).isNumeric()) {
+  //         numstr
+  //       }
+  //     }
+  //   }
+  // }
+  function test(str) {
+    if (units.hasOwnProperty(str)) {
+      return units[str];
+    }
+  }
+  var t = test(lc.split(" ")[1]);
+  if (t) {
+    var num = parseInt(lc.split(" ")[0]);
+    if (num) {
+      now.add(num, t);
+      reminderinstant = now.toDate().valueOf();
+      remindermessage = argument.substring(lc.split(" ")[0].length + lc.split(" ")[1].length + 2);
+    }
+  }
+  if (reminderinstant == -1) {
+    msg.reply("Could not parse time.");
+    return;
+  }
+  var reminderdata = {
+    userid: msg.member.id,
+    time: reminderinstant,
+    message: remindermessage
+  };
+  msg.reply("I'll remind you \"" + reminderdata.message + "\" at " + new Date(reminderdata.time).toString());
+  db.get("SELECT * FROM KeyValue WHERE key = ?", ["REMINDERS"], (err, val) => {
+    if (val) {
+      db.run("DELETE FROM KeyValue WHERE key = ?", ["REMINDERS"]);
+      var oldval = JSON.parse(val.value);
+      oldval.push(reminderdata);
+      db.run("INSERT INTO KeyValue VALUES (?, ?)", ["REMINDERS", JSON.stringify(oldval)]);
+    } else {
+      var oldval = Array();
+      oldval.push(reminderdata);
+      db.run("INSERT INTO KeyValue VALUES (?, ?)", ["REMINDERS", JSON.stringify(oldval)]);
+    }
+  });
+  remind(reminderdata);
+}
+
+function checkPastReminders() {
+  db.get("SELECT * FROM KeyValue WHERE key = ?", ["REMINDERS"], (err, val) => {
+    if (val) {
+      var arr = JSON.parse(val.value);
+      for (var i = 0; i < arr.length; i++) {
+        remind(arr[i]);
+      }
+    } else {}
+  });
+}
+
+function remind(reminderdata) {
+  var action = () => {
+    client.users.fetch(reminderdata.userid).then(function (user) {
+      user.send(reminderdata.message);
+      db.get("SELECT * FROM KeyValue WHERE key = ?", ["REMINDERS"], (err, val) => {
+        if (val) {
+          db.run("DELETE FROM KeyValue WHERE key = ?", ["REMINDERS"]);
+          var oldval = JSON.parse(val.value);
+          oldval.pop(reminderdata);
+          db.run("INSERT INTO KeyValue VALUES (?, ?)", ["REMINDERS", JSON.stringify(oldval)]);
+        } else {}
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+  };
+  setTimeout(action, reminderdata.time - new Date().valueOf());
 }

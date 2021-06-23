@@ -88,15 +88,15 @@ if (!function_exists('launch_helpful_bot')) {
             $wpdb->query("UPDATE whssopluginhashmap SET `value` = 'Launching...' WHERE `key` = 'helpfulbotstate';");
             $initdir = getcwd();
             chdir("../wp-content/plugins/custom-so-plugin/modules/helpfulbot/");
-            `npm ci express`;
-            `npm ci body-parser`;
-            `npm ci http`;
-            `npm ci node-fetch`;
-            `npm ci fs`;
-            `npm ci sqlite3`; 
-            `npm ci discord.js`;
-            `npm ci moment`;
-            `npm ci moment-timezone`;
+            // `npm ci express`;
+            // `npm ci body-parser`;
+            // `npm ci http`;
+            // `npm ci node-fetch`;
+            // `npm ci fs`;
+            // `npm ci sqlite3`; 
+            // `npm ci discord.js`;
+            // `npm ci moment`;
+            // `npm ci moment-timezone`;
             $descriptorspec = [
                 0 => ['pipe', 'r'],
                 1 => ['pipe', 'w'],
@@ -116,10 +116,18 @@ if (!function_exists('launch_helpful_bot')) {
             $hbotstate = 'Running';
             $wpdb->query("UPDATE whssopluginhashmap SET `value` = 'Running' WHERE `key` = 'helpfulbotstate';");
             chdir($initdir);
-        } else {
-            wp_die();
         }
     }
+    // $adminlocationtokens = explode("public_html", get_admin_url());
+    // $preroot = "";
+    // for ($i = 0; $i < count($adminlocationtokens) - 1; $i++) {
+    //     $preroot .= $adminlocationtokens[$i] . "public_html";
+    // }
+    // $postroot = $adminlocationtokens[count($adminlocationtokens) - 1];
+    // $thisfiledir = getcwd();
+    // chdir(ABSPATH.$postroot);
+    // launch_helpful_bot();
+    // chdir($thisfiledir);
 }
 
 if (!function_exists('kill_helpful_bot')) {
@@ -143,6 +151,7 @@ if (!function_exists('kill_helpful_bot')) {
             wp_die();
         }
     }
+    // register_shutdown_function('kill_helpful_bot');
 }
 
 create_whsso_php_button(
